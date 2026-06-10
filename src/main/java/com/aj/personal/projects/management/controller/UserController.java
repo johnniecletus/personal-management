@@ -1,6 +1,7 @@
 package com.aj.personal.projects.management.controller;
 
 
+import com.aj.personal.projects.management.dto.ApiResponse;
 import com.aj.personal.projects.management.dto.CreateUserRequestDto;
 import com.aj.personal.projects.management.dto.UserDto;
 import com.aj.personal.projects.management.service.UserService;
@@ -18,25 +19,43 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<UserDto> createUsers(CreateUserRequestDto request) {
+    public ResponseEntity<ApiResponse<UserDto>> createUsers(CreateUserRequestDto request) {
         UserDto user = userService.addUser(request);
 
-        return new ResponseEntity<>(user, HttpStatus.CREATED);
+        ApiResponse<UserDto> response = ApiResponse.<UserDto>builder()
+                .success(true)
+                .message("User created successfully")
+                .data(user)
+                .build();
+
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public  ResponseEntity<List<UserDto>> getAllUsers() {
+    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers() {
         List<UserDto> users = userService.getAllUsers();
 
-        return ResponseEntity.ok(users);
+        ApiResponse<List<UserDto>> response = ApiResponse.<List<UserDto>>builder()
+                .success(true)
+                .message("Users fetched successfully")
+                .data(users)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<UserDto> getUser(@PathVariable("id") Long id ) {
+    public ResponseEntity<ApiResponse<UserDto>> getUser(@PathVariable("id") Long id ) {
 
         UserDto user = userService.getUserById(id);
 
-        return ResponseEntity.ok(user);
+        ApiResponse<UserDto> result = ApiResponse.<UserDto>builder()
+                .success(true)
+                .message("User fetched successfully")
+                .data(user)
+                .build();
+
+        return ResponseEntity.ok(result);
     }
 
 }
