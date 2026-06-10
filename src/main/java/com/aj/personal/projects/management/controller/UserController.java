@@ -1,11 +1,10 @@
 package com.aj.personal.projects.management.controller;
 
 
-import com.aj.personal.projects.management.dto.ApiResponse;
-import com.aj.personal.projects.management.dto.CreateUserRequestDto;
-import com.aj.personal.projects.management.dto.UserDto;
+import com.aj.personal.projects.management.dto.*;
 import com.aj.personal.projects.management.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +18,10 @@ public class UserController {
     private UserService userService;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<UserDto>> createUsers(CreateUserRequestDto request) {
+    public ResponseEntity<ApiResponseDto<UserDto>> createUsers(CreateUserRequestDto request) {
         UserDto user = userService.addUser(request);
 
-        ApiResponse<UserDto> response = ApiResponse.<UserDto>builder()
+        ApiResponseDto<UserDto> response = ApiResponseDto.<UserDto>builder()
                 .success(true)
                 .message("User created successfully")
                 .data(user)
@@ -32,24 +31,33 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<UserDto>>> getAllUsers() {
-        List<UserDto> users = userService.getAllUsers();
+    public ResponseEntity<PaginatedResponseDto<List<UserDto>>> getAllUsers(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int limit) {
 
-        ApiResponse<List<UserDto>> response = ApiResponse.<List<UserDto>>builder()
+        Page<UserDto> usersPage = userService.getAllUsers(page, limit);
+
+        PaginatedMetaDto pagination = PaginatedMetaDto.builder()
+                .page(page)
+                .limit(limit)
+                .total(usersPage.getTotalElements())
+                .totalPages(usersPage.getTotalPages())
+                .build();
+
+        PaginatedResponseDto<List<UserDto>> response = PaginatedResponseDto.<List<UserDto>>builder()
                 .success(true)
                 .message("Users fetched successfully")
-                .data(users)
+                .data(usersPage.getContent())
+                .pagination(pagination)
                 .build();
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<ApiResponse<UserDto>> getUser(@PathVariable("id") Long id ) {
+    public ResponseEntity<ApiResponseDto<UserDto>> getUser(@PathVariable("id") Long id ) {
 
         UserDto user = userService.getUserById(id);
 
-        ApiResponse<UserDto> result = ApiResponse.<UserDto>builder()
+        ApiResponseDto<UserDto> result = ApiResponseDto.<UserDto>builder()
                 .success(true)
                 .message("User fetched successfully")
                 .data(user)

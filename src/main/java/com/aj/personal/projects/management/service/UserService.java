@@ -2,14 +2,14 @@ package com.aj.personal.projects.management.service;
 
 import com.aj.personal.projects.management.dto.CreateUserRequestDto;
 import com.aj.personal.projects.management.dto.UserDto;
+import org.springframework.data.domain.Page;
 
-import java.util.List;
 
 public interface UserService {
 
     UserDto addUser(CreateUserRequestDto request);
 
-    List<UserDto> getAllUsers();
+    Page<UserDto> getAllUsers(int page, int limit);
 
     UserDto getUserById(Long id);
 

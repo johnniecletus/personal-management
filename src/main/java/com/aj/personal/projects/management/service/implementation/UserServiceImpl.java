@@ -2,6 +2,9 @@ package com.aj.personal.projects.management.service.implementation;
 
 
 import com.aj.personal.projects.management.exception.ResourceNotFoundException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +15,6 @@ import com.aj.personal.projects.management.repository.UserRepository;
 import com.aj.personal.projects.management.service.UserService;
 
 import lombok.AllArgsConstructor;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -48,11 +48,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> getAllUsers() {
+    public Page<UserDto> getAllUsers(int page, int limit) {
 
-        List<User> users = userRepository.findAll();
+        Pageable pageable = PageRequest.of(page - 1, limit);
 
-       return  users.stream().map(user -> UserDto.builder()
+
+        Page<User> usersPage = userRepository.findAll(pageable);
+
+       return  usersPage.map(user -> UserDto.builder()
                        .id(user.getId())
                        .email(user.getEmail())
                        .fullName(user.getFullName())
@@ -60,8 +63,7 @@ public class UserServiceImpl implements UserService {
                        .createdAt(user.getCreatedAt())
                        .updatedAt(user.getUpdatedAt())
                        .build()
-               )
-               .collect(Collectors.toList());
+               );
     }
 
     @Override
