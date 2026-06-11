@@ -1,5 +1,10 @@
 package com.aj.personal.projects.management.entity;
 
+import com.aj.personal.projects.management.enums.UserRole;
+
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,8 +45,13 @@ public class User {
     @Column(nullable = false, unique = true)
     private String userName;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private UserRole role = UserRole.USER;
+
     @Column(nullable = false, length = 255)
     private String password;
+
 
     @CreationTimestamp
     @Column(nullable = false, updatable = false)
