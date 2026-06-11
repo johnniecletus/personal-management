@@ -17,7 +17,7 @@ import java.util.List;
 public class UserController {
     private UserService userService;
 
-    @PostMapping
+    @PostMapping("/new")
     public ResponseEntity<ApiResponseDto<UserDto>> createUsers(CreateUserRequestDto request) {
         UserDto user = userService.addUser(request);
 
