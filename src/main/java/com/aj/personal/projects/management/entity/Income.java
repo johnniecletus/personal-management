@@ -51,7 +51,7 @@ public class Income {
     @Column(name = "received_at", nullable = false)
     private LocalDateTime receivedAt;
 
-    @Column(nullable = false)
+    @Column
     private String description;
 
     @OneToMany(mappedBy = "income", cascade = CascadeType.ALL, orphanRemoval = true)
