@@ -1,55 +1,76 @@
 package com.aj.personal.projects.management.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "monthlyoverviews")
+@Table(
+        name = "monthlyoverviews",
+        uniqueConstraints = @UniqueConstraint(
+                name = "uk_monthlyoverviews_user_currency_month_start",
+                columnNames = {"user_id", "currency_id", "month_start"}
+        )
+)
 public class MonthlyOverview {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "currency_id", nullable = false)
     private Currency currency;
 
-    @Column(nullable = false)
-    private LocalDateTime month;
+    @Column(name = "month_start", nullable = false)
+    private LocalDate monthStart;
 
-    @Column(nullable=false, precision = 19, scale = 2)
-    private BigDecimal total_income_amount = BigDecimal.ZERO;
+    @Column(name = "total_income_amount", nullable = false, precision = 19, scale = 2)
+    private BigDecimal totalIncomeAmount = BigDecimal.ZERO;
 
-    @Column(nullable=false, precision = 19, scale = 2)
-    private BigDecimal total_savings_amount = BigDecimal.ZERO;
+    @Column(name = "total_savings_amount", nullable = false, precision = 19, scale = 2)
+    private BigDecimal totalSavingsAmount = BigDecimal.ZERO;
 
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
-    @Column(nullable = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public MonthlyOverview(User user, Currency currency, BigDecimal total_income_amount, BigDecimal total_savings_amount) {
+    public MonthlyOverview(
+            User user,
+            Currency currency,
+            LocalDate monthStart,
+            BigDecimal totalIncomeAmount,
+            BigDecimal totalSavingsAmount
+    ) {
         this.user = user;
         this.currency = currency;
-        this.total_income_amount = total_income_amount;
-        this.total_savings_amount = total_savings_amount;
+        this.monthStart = monthStart;
+        this.totalIncomeAmount = totalIncomeAmount == null ? BigDecimal.ZERO : totalIncomeAmount;
+        this.totalSavingsAmount = totalSavingsAmount == null ? BigDecimal.ZERO : totalSavingsAmount;
     }
-
 }

@@ -1,14 +1,24 @@
 package com.aj.personal.projects.management.entity;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -23,29 +33,32 @@ public class Income {
     @Column(nullable = false)
     private String name;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cluster_id", nullable = false)
     private SavingsCluster cluster;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "currency_id", nullable = false)
     private Currency currency;
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal amount = BigDecimal.ZERO;
 
-    @Column(nullable = false)
-    private LocalDateTime month;
+    @Column(name = "received_at", nullable = false)
+    private LocalDateTime receivedAt;
 
     @Column(nullable = false)
     private String description;
 
+    @OneToMany(mappedBy = "income", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SavingsHistory> savingsHistories = new ArrayList<>();
+
     @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public Income(
@@ -54,17 +67,15 @@ public class Income {
             SavingsCluster cluster,
             Currency currency,
             BigDecimal amount,
-            String income_type,
-            LocalDateTime month,
+            LocalDateTime receivedAt,
             String description
     ) {
         this.user = user;
         this.name = name;
         this.cluster = cluster;
         this.currency = currency;
-        this.amount = amount;
-        this.income_type = income_type;
-        this.month = month;
+        this.amount = amount == null ? BigDecimal.ZERO : amount;
+        this.receivedAt = receivedAt;
         this.description = description;
     }
 }
