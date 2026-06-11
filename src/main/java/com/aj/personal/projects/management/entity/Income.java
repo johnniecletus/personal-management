@@ -39,9 +39,6 @@ public class Income {
     private BigDecimal amount = BigDecimal.ZERO;
 
     @Column(nullable = false)
-    private String income_type;
-
-    @Column(nullable = false)
     private LocalDateTime month;
 
     @Column(nullable = false)
