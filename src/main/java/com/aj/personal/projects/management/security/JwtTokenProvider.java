@@ -107,7 +107,7 @@ public class JwtTokenProvider {
             return false;
         }
     }
-    
+
 
     private Claims getClaimsFromToken(String token) {
         Claims claims = Jwts.parser()
