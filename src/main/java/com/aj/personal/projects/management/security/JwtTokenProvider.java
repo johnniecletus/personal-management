@@ -26,11 +26,14 @@ public class JwtTokenProvider {
     @Value("${app.jwt.public-key}")
     private String jwtPublicKey;
 
-    @Value("${app.jwt-expiration-milliseconds}")
-    private Long jwtExpirationDate;
+    @Value("${app.jwt.access-token-expiration-milliseconds}")
+    private Long accessTokenExpiration;
+
+    @Value("${app.jwt.refresh-token-expiration-milliseconds}")
+    private Long refreshTokenExpiration;
 
     // Generate jwt token
-    public String generateToken(Authentication authentication) {
+    public String generateAccessToken(Authentication authentication) {
         String usernameOrEmail = authentication.getName();
 
         List<String> roles = authentication.getAuthorities()
@@ -39,19 +42,38 @@ public class JwtTokenProvider {
                 .toList();
 
         Date currentDate = new Date();
+        Date expiryDate = new Date(currentDate.getTime() + accessTokenExpiration);
 
-        Date expiryDate = new Date(currentDate.getTime() + jwtExpirationDate);
-
-        String token = Jwts.builder()
+        String accessToken = Jwts.builder()
                 .subject(usernameOrEmail)
+                .claim("type", "access")
                 .claim("roles", roles)
                 .issuedAt(currentDate)
                 .expiration(expiryDate)
                 .signWith(getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
 
-        return token;
+        return accessToken;
     }
+
+
+    public String generateRefreshToken(Authentication authentication) {
+        String usernameOrEmail = authentication.getName();
+
+        Date currentDate = new Date();
+        Date expiryDate = new Date(currentDate.getTime() + refreshTokenExpiration);
+
+        String refreshToken = Jwts.builder()
+                .subject(usernameOrEmail)
+                .claim("type", "refresh")
+                .issuedAt(currentDate)
+                .expiration(expiryDate)
+                .signWith(getPrivateKey(), Jwts.SIG.RS256)
+                .compact();
+
+        return refreshToken;
+    }
+
 
 
     public String getUsernameFromToken(String token) {
@@ -61,21 +83,31 @@ public class JwtTokenProvider {
         return usernameOrEmail;
     }
 
-    public boolean validateToken(String token) {
-        try {
-            getClaimsFromToken(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException exception) {
-            return false;
-        }
-    }
-
     public List<String> getRolesFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
         List<String> roles = claims.get("roles", List.class);
 
         return roles;
     }
+
+    public boolean validateAccessToken(String token) {
+        try {
+            Claims claims = getClaimsFromToken(token);
+            return "access".equals(claims.get("type", String.class));
+        } catch (JwtException | IllegalArgumentException exception) {
+            return false;
+        }
+    }
+
+    public boolean validateRefreshToken(String token) {
+        try {
+            Claims claims = getClaimsFromToken(token);
+            return "refresh".equals(claims.get("type", String.class));
+        } catch (JwtException | IllegalArgumentException exception) {
+            return false;
+        }
+    }
+    
 
     private Claims getClaimsFromToken(String token) {
         Claims claims = Jwts.parser()
