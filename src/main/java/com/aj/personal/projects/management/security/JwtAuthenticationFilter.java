@@ -21,11 +21,9 @@ import java.util.List;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtTokenProvider jwtTokenProvider;
 
-    private AuthService authService;
 
-    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider, AuthService authService) {
+    public JwtAuthenticationFilter(JwtTokenProvider jwtTokenProvider) {
         this.jwtTokenProvider = jwtTokenProvider;
-        this.authService = authService;
     }
 
     @Override
