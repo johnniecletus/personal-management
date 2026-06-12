@@ -32,12 +32,12 @@ public class JwtTokenProvider {
 
         Date currentDate = new Date();
 
-        Date expirtyDate = new Date(currentDate.getTime() + jwtExpirationDate);
+        Date expiryDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
         return Jwts.builder()
                 .subject(username)
                 .issuedAt(currentDate)
-                .expiration(expirtyDate)
+                .expiration(expiryDate)
                 .signWith(getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
     }
