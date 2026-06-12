@@ -2,7 +2,6 @@ package com.aj.personal.projects.management.security;
 
 import com.aj.personal.projects.management.dto.ErrorResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
