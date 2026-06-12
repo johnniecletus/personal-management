@@ -69,9 +69,14 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public UserDto loginUser(LoginUserRequestDto request) {
 
-       if(userRepository.findByEmailOrUsername(request.getEmailOrUsername(), request.getEmailOrUsername())){
-           throw new ResourceNotFoundException("User does not exit with" + request.getEmailOrUsername());
-       }
+        User user = userRepository.findByEmailOrUsername(
+                request.getEmailOrUsername(),
+                request.getEmailOrUsername()
+        ).orElseThrow(
+                () -> new ResourceNotFoundException(
+                        "User does not exit with" + request.getEmailOrUsername()
+                )
+        );
 
 
         return null;
