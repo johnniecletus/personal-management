@@ -40,15 +40,5 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                 response.getWriter(),
                 errorResponse
         );
-
-//        response.getWriter().write(
-//                """
-//                          {
-//                                      "success": false,
-//                                      "error": "UNAUTHORIZED",
-//                                      "message": "You need to login to access this resource"
-//                                    }
-//                        """
-//        );
     }
 }

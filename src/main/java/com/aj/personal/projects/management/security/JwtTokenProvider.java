@@ -42,19 +42,23 @@ public class JwtTokenProvider {
 
         Date expiryDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
-        return Jwts.builder()
+        String token = Jwts.builder()
                 .subject(usernameOrEmail)
                 .claim("roles", roles)
                 .issuedAt(currentDate)
                 .expiration(expiryDate)
                 .signWith(getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
+
+        return token;
     }
 
 
-
     public String getUsernameFromToken(String token) {
-        return getClaimsFromToken(token).getSubject();
+
+        String usernameOrEmail = getClaimsFromToken(token).getSubject();
+
+        return usernameOrEmail;
     }
 
     public boolean validateToken(String token) {
@@ -68,15 +72,19 @@ public class JwtTokenProvider {
 
     public List<String> getRolesFromToken(String token) {
         Claims claims = getClaimsFromToken(token);
-        return claims.get("roles", List.class);
+        List<String> roles = claims.get("roles", List.class);
+
+        return roles;
     }
 
     private Claims getClaimsFromToken(String token) {
-        return Jwts.parser()
+        Claims claims = Jwts.parser()
                 .verifyWith(getPublicKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
+
+        return claims;
     }
 
     private PrivateKey getPrivateKey() {
