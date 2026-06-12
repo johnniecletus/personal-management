@@ -1,9 +1,11 @@
 package com.aj.personal.projects.management.security;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.KeyFactory;
@@ -13,6 +15,7 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 import java.util.Date;
+import java.util.List;
 
 @Component
 public class JwtTokenProvider {
@@ -28,38 +31,52 @@ public class JwtTokenProvider {
 
     // Generate jwt token
     public String generateToken(Authentication authentication) {
-        String username = authentication.getName();
+        String usernameOrEmail = authentication.getName();
+
+        List<String> roles = authentication.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList();
 
         Date currentDate = new Date();
 
         Date expiryDate = new Date(currentDate.getTime() + jwtExpirationDate);
 
         return Jwts.builder()
-                .subject(username)
+                .subject(usernameOrEmail)
+                .claim("roles", roles)
                 .issuedAt(currentDate)
                 .expiration(expiryDate)
                 .signWith(getPrivateKey(), Jwts.SIG.RS256)
                 .compact();
     }
 
+
+
     public String getUsernameFromToken(String token) {
-        Claims claims = Jwts.parser()
+        return getClaimsFromToken(token).getSubject();
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            getClaimsFromToken(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException exception) {
+            return false;
+        }
+    }
+
+    public List<String> getRolesFromToken(String token) {
+        Claims claims = getClaimsFromToken(token);
+        return claims.get("roles", List.class);
+    }
+
+    private Claims getClaimsFromToken(String token) {
+        return Jwts.parser()
                 .verifyWith(getPublicKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();
-
-        return claims.getSubject();
-    }
-
-    public boolean validateToken(String token) {
-        Jwts.parser()
-                .verifyWith(getPublicKey())
-                .build()
-                .parseSignedClaims(token);
-
-
-        return true;
     }
 
     private PrivateKey getPrivateKey() {
