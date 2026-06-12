@@ -1,4 +1,4 @@
 package com.aj.personal.projects.management.exception;
 
-public class ResourceNotFoundException {
+public class BadRequestException {
 }
