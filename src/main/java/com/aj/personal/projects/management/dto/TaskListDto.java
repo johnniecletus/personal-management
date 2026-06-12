@@ -25,6 +25,4 @@ public class TaskListDto {
 
     private LocalDateTime updatedAt;
 
-
-
 }

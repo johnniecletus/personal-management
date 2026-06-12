@@ -17,19 +17,6 @@ import java.util.List;
 public class UserController {
     private UserService userService;
 
-    @PostMapping("/new")
-    public ResponseEntity<ApiResponseDto<UserDto>> createUsers(CreateUserRequestDto request) {
-        UserDto user = userService.addUser(request);
-
-        ApiResponseDto<UserDto> response = ApiResponseDto.<UserDto>builder()
-                .success(true)
-                .message("User created successfully")
-                .data(user)
-                .build();
-
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
     @GetMapping
     public ResponseEntity<PaginatedResponseDto<List<UserDto>>> getAllUsers(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int limit) {
 

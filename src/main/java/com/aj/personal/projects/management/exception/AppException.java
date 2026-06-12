@@ -1,11 +1,22 @@
 package com.aj.personal.projects.management.exception;
 
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.NOT_FOUND)
-public class ResourceNotFoundException extends RuntimeException {
-    public ResourceNotFoundException(String message) {
+@Getter
+public class AppException extends RuntimeException {
+
+    private final HttpStatus status;
+    private final String error;
+
+    public AppException(
+            String message,
+            String error,
+            HttpStatus status
+    ) {
         super(message);
+        this.error = error;
+        this.status = status;
     }
 }
