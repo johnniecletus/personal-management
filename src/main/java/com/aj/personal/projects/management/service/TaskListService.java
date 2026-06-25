@@ -1,14 +1,14 @@
 package com.aj.personal.projects.management.service;
 
 import com.aj.personal.projects.management.dto.TaskListDto;
-
+import com.aj.personal.projects.management.dto.TaskListRequestDto;
 import java.util.List;
 
 public interface TaskListService {
 
-    TaskListDto createTask(TaskListDto task);
+    TaskListDto createTask(TaskListRequestDto task);
 
-    TaskListDto updateTask(TaskListDto task, Long id);
+    TaskListDto updateTask(TaskListRequestDto task, Long id);
 
     TaskListDto getTask(Long id);
 
@@ -17,6 +17,4 @@ public interface TaskListService {
     List<TaskListDto> getAllTasks();
 
     TaskListDto competeAllTaskItems(Long id);
-
-
 }

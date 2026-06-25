@@ -1,10 +1,9 @@
 package com.aj.personal.projects.management.service;
 
-
-import com.aj.personal.projects.management.dto.CreateUserRequestDto;
+import com.aj.personal.projects.management.dto.UpdatePasswordRequestDto;
+import com.aj.personal.projects.management.dto.UpdateUserProfileRequestDto;
 import com.aj.personal.projects.management.dto.UserDto;
 import org.springframework.data.domain.Page;
-
 
 public interface UserService {
 
@@ -12,16 +11,13 @@ public interface UserService {
 
     UserDto getUserById(Long id);
 
-    UserDto updateUserDetails(UserDto request);
+    UserDto getCurrentUserProfile();
 
-    String updateUserPassword(CreateUserRequestDto request);
+    UserDto updateCurrentUser(UpdateUserProfileRequestDto request);
+
+    String updateCurrentUserPassword(UpdatePasswordRequestDto request);
 
     void deleteUser(Long id);
 
-    void deleteMe(Long id);
-
-
-
-
-
+    void deleteCurrentUser();
 }
