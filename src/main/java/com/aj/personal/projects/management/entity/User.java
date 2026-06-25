@@ -61,6 +61,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<MonthlyOverview> monthlyOverviews = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<AuthSession> authSessions = new ArrayList<>();
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
