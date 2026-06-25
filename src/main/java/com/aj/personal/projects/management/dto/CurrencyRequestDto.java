@@ -1,6 +1,5 @@
 package com.aj.personal.projects.management.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -12,21 +11,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateUserRequestDto {
+public class CurrencyRequestDto {
     @NotBlank
-    @Email
-    @Size(max = 255)
-    private String email;
+    @Size(max = 10)
+    private String code;
 
     @NotBlank
-    @Size(max = 255)
-    private String fullName;
-
-    @NotBlank
-    @Size(max = 255)
-    private String userName;
-
-    @NotBlank
-    @Size(min = 8, max = 72)
-    private String password;
+    @Size(max = 100)
+    private String name;
 }

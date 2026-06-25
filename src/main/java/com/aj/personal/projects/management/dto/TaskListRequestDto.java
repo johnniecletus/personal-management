@@ -1,6 +1,8 @@
 package com.aj.personal.projects.management.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,10 +12,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginUserRequestDto {
+public class TaskListRequestDto {
     @NotBlank
-    private String emailOrUsername;
+    private String name;
 
-    @NotBlank
-    private String password;
+    private Boolean completed;
+
+    @Valid
+    private List<TaskListItemRequestDto> items;
 }

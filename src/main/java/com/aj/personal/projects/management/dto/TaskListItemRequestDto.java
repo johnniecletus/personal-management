@@ -1,6 +1,8 @@
 package com.aj.personal.projects.management.dto;
 
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,10 +12,12 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginUserRequestDto {
+public class TaskListItemRequestDto {
     @NotBlank
-    private String emailOrUsername;
+    private String name;
 
-    @NotBlank
-    private String password;
+    @DecimalMin(value = "0.00")
+    private BigDecimal amount;
+
+    private Boolean completed;
 }

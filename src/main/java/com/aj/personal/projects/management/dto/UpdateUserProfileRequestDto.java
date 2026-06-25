@@ -1,10 +1,8 @@
 package com.aj.personal.projects.management.dto;
 
-import com.aj.personal.projects.management.enums.UserRole;
-import java.time.LocalDateTime;
-
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,13 +11,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserDto {
-    private Long id;
+public class UpdateUserProfileRequestDto {
+    @Email
+    @Size(max = 255)
     private String email;
+
+    @Size(max = 255)
     private String fullName;
+
+    @Size(max = 255)
     private String userName;
-    private UserRole role;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 }
